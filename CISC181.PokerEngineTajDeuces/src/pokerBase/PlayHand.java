@@ -15,17 +15,27 @@ import java.io.StringWriter;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.AnnotationConfiguration;
+
 public class PlayHand {
+	private static SessionFactory factory;
+	
 	public static void main(String[] args) throws Exception {
 
 		PlayJokerWild();
+		
+		
 	}
 
 
 	private static void PlayJokerWild() throws Exception {
 
 		// Table is created
-		Table tbl = new Table();
+		CardTable tbl = new CardTable();
 
 		// Rule set is called (A given game has a rule set)
 		Rule rle = new Rule(eGame.DeucesWild);
@@ -99,6 +109,25 @@ public class PlayHand {
 		//	Kicker;
 		for (Player p : gme.GetGamePlayers()) {
 			Hand h = p.GetHand();
+			try{
+				factory = new AnnotationConfiguration().configure().addAnnotatedClass(Hand.class).buildSessionFactory();
+			}catch(Throwable ex){
+				System.err.println("Failed to create sessionFactory object.");
+				throw new ExceptionInInitializerError(ex);
+			}
+			//PlayHand playInstance = new PlayHand();
+			Session session = factory.openSession();
+			Transaction tx = null;
+			try{
+				tx = session.beginTransaction();
+				session.save(h);
+				tx.commit();
+			}catch (HibernateException e){
+				if (tx!= null) tx.rollback();
+				e.printStackTrace();
+			}finally{
+				session.close();
+			}
 		}
 		
 		Player WinningPlayer = (Player) PlayerMap.get(AllHands.get(0).getPlayerID());

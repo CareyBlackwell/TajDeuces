@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 @XmlRootElement
-public class Table {
+public class CardTable {
 	@XmlElement
 	private UUID TableID;
 	@XmlElement
@@ -21,7 +21,7 @@ public class Table {
 	private ArrayList<Player> TablePlayers = new ArrayList<Player>();
 	
 	
-	public Table()
+	public CardTable()
 	{
 		this.TableID = UUID.randomUUID();
 	}
@@ -68,7 +68,7 @@ public class Table {
 		try
 		{
 		    //Write it
-		    JAXBContext ctx = JAXBContext.newInstance(Table.class);
+		    JAXBContext ctx = JAXBContext.newInstance(CardTable.class);
 		    Marshaller m = ctx.createMarshaller();
 		    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		    m.marshal(this, sw);

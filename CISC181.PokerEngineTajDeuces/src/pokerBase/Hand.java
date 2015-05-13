@@ -5,34 +5,53 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;
 
+
+import javax.persistence.*;
+
 import javax.xml.bind.annotation.XmlElement;
 
 import pokerEnums.eCardNo;
 import pokerEnums.eHandStrength;
 import pokerEnums.eRank;
 
+@Entity
+@Table(name = "HAND_RESULTS")
 public class Hand {
+	@Id
+	@Column(name = "PLAYER_ID")
 	private UUID playerID;
+	@Transient
 	@XmlElement
 	private ArrayList<Card> CardsInHand;
+	@Transient
 	private ArrayList<Card> BestCardsInHand;
 
+	@Column
 	@XmlElement
 	private int HandStrength;
 	@XmlElement
+	@Column(name = "WILD_HAND")
 	private int Natural = 1;
+	@Column(name = "HIGH_CARD")
 	@XmlElement
 	private int HiHand;
+	@Column(name = "LOW_CARD")
 	@XmlElement
 	private int LoHand;
+	@Column
 	@XmlElement
 	private int Kicker;
-
+	
+	@Transient
 	private boolean bScored = false;
 
+	@Transient
 	private boolean Flush;
+	@Transient
 	private boolean Straight;
+	@Transient
 	private boolean Ace;
+	@Transient
 	private static Deck dJoker = new Deck();
 
 	public Hand()
